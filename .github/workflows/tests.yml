@@ -7,9 +7,9 @@ on:
   pull_request:
     branches:
       - main
-
   schedule:
     - cron: '*/5 * * * *'
+  workflow_dispatch: # Cho phép khởi chạy thủ công
 
 jobs:
   tests:
@@ -63,4 +63,3 @@ jobs:
           AD_ALWAYS_FREE: ${{ secrets.AD_ALWAYS_FREE }}
           TEST_IMAGE_ID: ${{ secrets.TEST_IMAGE_ID }}
           TEST_SUBNET_ID: ${{ secrets.TEST_SUBNET_ID }}
-
