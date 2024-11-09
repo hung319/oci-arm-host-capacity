@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.4']
+        php-versions: ['8.3']
     name: integration-tests (PHP ${{ matrix.php-versions }})
     steps:
       - uses: actions/checkout@v1
@@ -42,9 +42,9 @@ jobs:
       - name: Install dependencies
         run: |
           composer update --prefer-dist --no-progress
-      - name: Run script
+      - name: Run test suite
         run: |
-          php index.php
+          vendor/bin/phpunit --color tests/
         env:
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
@@ -61,6 +61,3 @@ jobs:
           OCI_SSH_PUBLIC_KEY: ${{ secrets.OCI_SSH_PUBLIC_KEY }}
           TELEGRAM_USER_ID: ${{ secrets.TELEGRAM_USER_ID }}
           TELEGRAM_BOT_API_KEY: ${{ secrets.TELEGRAM_BOT_API_KEY }}
-          AD_ALWAYS_FREE: ${{ secrets.AD_ALWAYS_FREE }}
-          TEST_IMAGE_ID: ${{ secrets.TEST_IMAGE_ID }}
-          TEST_SUBNET_ID: ${{ secrets.TEST_SUBNET_ID }}
