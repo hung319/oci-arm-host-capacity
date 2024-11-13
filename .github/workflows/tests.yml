@@ -10,7 +10,7 @@ on:
   workflow_dispatch:   # Thêm dòng này để tạo nút chạy thủ công
 
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '* * * * *'
 
 jobs:
   tests:
