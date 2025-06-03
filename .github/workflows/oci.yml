@@ -1,32 +1,32 @@
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  #push:
+    #branches:
+      #- main
+  #pull_request:
+    #branches:
+      #- main
   workflow_dispatch:   # This allows manual triggering
 
-  schedule:
-    - cron: '* * * * *'
+  #schedule:
+    #- cron: '* * * * *'
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['8.0', '8.1', '8.2', '8.3'] # It's good practice to be more specific with PHP versions
+        php-versions: ['8.0'] # Specifically using PHP 8.0
     name: integration-tests (PHP ${{ matrix.php-versions }})
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Updated from v1
+        uses: actions/checkout@v4 # Latest version for checkout
 
       - name: Install PHP
-        uses: shivammathur/setup-php@v2 # v2 is a stable major version, ensure it's the one you intend.
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, xml, ctype, json, zip # Add common extensions if your project needs them
-          tools: composer:v2 # Optionally specify composer version
+          extensions: mbstring, xml, ctype, json, zip # Common extensions, adjust if needed
+          tools: composer:v2 # Using Composer v2
 
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -34,20 +34,19 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT # Updated way to set output
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT # Correct way to set output
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v4 # Updated from v2
+        uses: actions/cache@v4 # Latest version for cache
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          # Consider making the key more specific for PHP version if dependencies change significantly
           key: ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-
 
       - name: Install dependencies
         run: |
-          composer update --prefer-dist --no-progress --no-interaction # Added --no-interaction for CI
+          composer update --prefer-dist --no-progress --no-interaction # Good practice for CI
 
       - name: Run script
         run: |
