@@ -1,3 +1,6 @@
+name: Build movie
+
+
 on:
   #push:
     #branches:
@@ -5,28 +8,25 @@ on:
   #pull_request:
     #branches:
       #- main
-  workflow_dispatch:   # This allows manual triggering
+  workflow_dispatch:   # Allows manual triggering
 
   #schedule:
     #- cron: '* * * * *'
 
 jobs:
-  tests:
+  oci: # Renamed the job to 'oci' and removed the matrix
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-versions: ['8.0'] # Specifically using PHP 8.0
-    name: integration-tests (PHP ${{ matrix.php-versions }})
+    name: oci-integration-tests # You can customize the display name further if you like
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Latest version for checkout
+        uses: actions/checkout@v4
 
-      - name: Install PHP
+      - name: Install PHP 8.0
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: '8.0' # Hardcoded PHP 8.0
           extensions: mbstring, xml, ctype, json, zip # Common extensions, adjust if needed
-          tools: composer:v2 # Using Composer v2
+          tools: composer:v2
 
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -34,19 +34,19 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT # Correct way to set output
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v4 # Latest version for cache
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-php-8.0-composer-${{ hashFiles('**/composer.lock') }} # Updated cache key for PHP 8.0
           restore-keys: |
-            ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-
+            ${{ runner.os }}-php-8.0-composer-
 
       - name: Install dependencies
         run: |
-          composer update --prefer-dist --no-progress --no-interaction # Good practice for CI
+          composer update --prefer-dist --no-progress --no-interaction
 
       - name: Run script
         run: |
