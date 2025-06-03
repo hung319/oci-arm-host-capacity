@@ -16,7 +16,7 @@ on:
 jobs:
   oci: # Renamed the job to 'oci' and removed the matrix
     runs-on: ubuntu-latest
-    name: oci-integration-tests # You can customize the display name further if you like
+    name: oci # You can customize the display name further if you like
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
