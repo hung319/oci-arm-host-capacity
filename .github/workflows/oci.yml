@@ -12,6 +12,8 @@ on:
 
   #schedule:
     #- cron: '* * * * *'
+  repository_dispatch: 
+   types: [oci]
 
 jobs:
   oci: # Renamed the job to 'oci' and removed the matrix
